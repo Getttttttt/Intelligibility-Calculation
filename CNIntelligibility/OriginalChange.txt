@@ -1,0 +1,52 @@
+A.1、Frost injury refers to crop damage caused by freezing temperatures.
+A.2、Cold work refers to operations conducted at low temperatures during production.
+B.1、"The Mona Lisa" is an oil painting created by Italian Renaissance artist Leonardo da Vinci.
+B.2、"The Last Supper" is a famous Renaissance religious masterpiece, exemplifying artistic excellence.
+C.1、Notre-Dame Cathedral, located in Paris, France, is a famous medieval Catholic church.
+C.2、Chongli Gate is a city gate in Beijing, China, built during the Ming Dynasty.
+D.1、A Private Detective is an independent investigator hired for personal investigations.
+D.2、A voice actor is someone who utilizes their voice skills to deliver artistic performances.
+E.1、Definition is a concise explanation of the meaning of a term.
+E.2、A glossary entry is a concise definition or description of a term.
+F.1、The Hague is an international city known for its political and legal significance.
+F.2、Santa Clara is a city in California known for its technological innovation.
+G.1、Rococo art is a decorative and ornate artistic style known for its elegance.
+G.2、Romanesque architecture is a medieval architectural style known for its robustness and G。grandeur.
+H.1、6G is the future wireless technology that is expected to revolutionize connectivity.
+H.2、The Internet of Things is a network that connects and communicates with objects.
+I.1、An astronomer is a scientist who studies celestial objects and phenomena.
+I.2、Astronomical symbols are graphical representations used to denote celestial bodies and events.
+J.1、Data communication is the exchange of information between devices through a network.
+J.2、Data science is the interdisciplinary field that extracts insights from data.
+K.1、Quantum dots are nanoscopic semiconductor crystals used in electronic devices.
+K.2、Quantum mechanics is the branch of physics that studies subatomic particles.
+L.1、An atmospheric model is a representation of the Earth's atmosphere for scientific study.
+L.2、A mathematical model is an abstract representation used to describe real-world phenomena.
+M.1、Ciprofloxacin is an antibiotic used to treat bacterial infections. 
+M.2、Ibuprofen is a nonsteroidal anti-inflammatory drug used for pain relief. 
+N.1、A question-answering system is a computer program that responds to user queries.
+N.2、Machine learning is a branch of artificial intelligence where computers learn from data.
+O.1、Folklore culture is the traditional customs and beliefs of a community.
+O.2、Ancient Greek culture refers to the civilization of ancient Greece.
+P.1、Artificial intelligence is the simulation of human intelligence by computers.
+P.2、Computer vision is the technology that enables computers to understand visual information.
+Q.1、Autonomous driving is the ability of a vehicle to operate without human intervention.
+Q.2、High-precision maps are detailed digital maps used for accurate navigation and positioning.
+R.1、Laser lidar is a remote sensing technology that uses laser light for measuring distances.
+R.2、Laser medicine refers to the use of laser technology in medical diagnosis and treatment.
+S.1、Beethoven is a renowned composer and pianist from the classical music era.
+S.2、Chopin is a famous Polish composer and virtuoso pianist of the Romantic period.
+T.1、A robot is a programmable machine designed to interact with its environment.
+T.2、Automation is the use of technology to perform tasks without human intervention.
+U.1、Cloud computing is the delivery of computing services over the internet.
+U.2、Data analysis is the process of examining and interpreting data to extract insights.
+V.1、Seismosaurus is a herbivorous dinosaur from Late Cretaceous North America.
+V.2、Allosaurus fragilis is a carnivorous dinosaur from North America that measures up to 11 meters long.
+W.1、Firestick is a succulent plant from warm regions in the Crassulaceae family.
+W.2、Desert Rose is originally from Africa and southern Arabia and now globally distributed.
+X.1、Chang Zheng-2D is a two-stage liquid-fueled rocket developed by the Shanghai Academy of Spaceflight Technology.
+X.2、Saturn V is a large multi-stage liquid fuel rocket developed for use in the Apollo program.
+Y.1、Blockchain is a chain of blocks that store information.
+Y.2、Metaverse is a digital living space created by the application of digital technology.
+Z.1、Interstellar matter is the matter and radiation field that exists between galaxies and stars.
+Z.2、Protoplanets are formed by the gravitational attraction and collision of planetesimals on a kilometer scale.
