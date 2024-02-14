@@ -240,7 +240,7 @@ def calculate_similarity_bm25(text1, text2):
     bm25_similarity = bm25.get_scores(tokenized_corpus[1])
     return bm25_similarity[0]  #第二个文本相对于第一个的相似度
 
-"""
+
 #LDA
 for file in txt_files:
     file_list = read_file(file)
@@ -303,7 +303,7 @@ for file in txt_files:
             #f.write(str(((calculate_proportion(line[2],data_original[int(line[0])][0]))+(calculate_proportion(line[3],data_original[int(line[0])][1])))/2))
             #f.write(',')
             f.write(str(((calculate_similarity_jaccard(line[2],data_original[int(line[0])][0]))+(calculate_similarity_jaccard(line[3],data_original[int(line[0])][1])))/2))
-            f.write('\n')"""
+            f.write('\n')
 #bm25
 for file in txt_files:
     file_list = read_file(file)
