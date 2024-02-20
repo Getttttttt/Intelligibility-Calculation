@@ -14,10 +14,10 @@ def addColumnName(method):
     df.to_excel('intelligibility_'+method+'.xlsx', index=False)
 
 
-addColumnName('bm25')
-addColumnName('difflib')
-addColumnName('jaccard')
-addColumnName('lda')
-addColumnName('levenshtein')
-addColumnName('simhash')
-addColumnName('proportion')
+# addColumnName('bm25')
+# addColumnName('difflib')
+# addColumnName('jaccard')
+# addColumnName('lda')
+# addColumnName('levenshtein')
+# addColumnName('simhash')
+addColumnName('transformer')

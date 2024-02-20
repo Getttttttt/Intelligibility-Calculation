@@ -15,7 +15,7 @@ from difflib import SequenceMatcher
 from rank_bm25 import BM25Okapi
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
-
+from sentence_transformers import SentenceTransformer
 
 def get_txt_files(directory):
     txt_files = []
@@ -26,7 +26,7 @@ def get_txt_files(directory):
 
 # 使用方法
 txt_files = get_txt_files('Text')
-print(txt_files)
+#print(txt_files)
 
 def read_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -42,7 +42,7 @@ def read_file(file_path):
 
 # 使用方法
 data = read_file(txt_files[0])
-print(data)
+#print(data)
 
 def read_original(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -59,14 +59,23 @@ def read_original(file_path):
 
 # 使用方法
 data_original = read_original('OriginalFinal.txt')
-print(data_original)
+#print(data_original)
 
+model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+def calculate_similarity_transformer(text1,text2):
+    sentences = [text1, text2]
+    embeddings = model.encode(sentences)
+    dot_product = np.dot(embeddings[0], embeddings[1])
+    norm_vector1 = np.linalg.norm(embeddings[0])
+    norm_vector2 = np.linalg.norm(embeddings[1])
+    cosine_similarity = dot_product / (norm_vector1 * norm_vector2)
+    return cosine_similarity
 
 def calculate_proportion(text1, text2):
     counter1 = Counter(text1)
     counter2 = Counter(text2)
     common_chars = counter1 & counter2
-    proportion = sum(common_chars.values()) / sum(counter2.values())
+    proportion = sum(common_chars.values()) / sum(counter1.values())
     return proportion
 
 def calculate_similarity_LDA(text1, text2):
@@ -80,54 +89,38 @@ def calculate_similarity_LDA(text1, text2):
     sims = index[lda[corpus[0]]]
     return sims[1]
 
-def splitWords(str_a):
-    wordsa=pseg.cut(str_a)
-    cuta = ""
-    seta = set()
-    for key in wordsa:
-        #print(key.word,key.flag)
-        cuta += key.word + " "
-        seta.add(key.word)
-    return [cuta, seta]
-def calculate_similarity_jaccard(text1,text2):
-    seta = splitWords(text1)[1]
-    setb = splitWords(text2)[1]
-    sa_sb = 1.0 * len(seta & setb) / len(seta | setb)
-    return sa_sb
-
-
-"""def calculate_similarity_cos(text1, text2):
+def calculate_similarity_cos(text1, text2):
     # 使用正则表达式去掉标点符号和特殊符号
     text1 = re.sub(r'\W', ' ', text1)
     text2 = re.sub(r'\W', ' ', text2)
+    print(text1)
+    print(text2)
     # 将文本转换为词袋模型向量
-    vectorizer = CountVectorizer().fit_transform([text1, text2])
-    vectors = vectorizer.toarray()
+    vectorizer = CountVectorizer().fit([text1, text2])
+    vectors = vectorizer.transform([text1, text2])
+    vectors = vectors.toarray()
     # 计算余弦相似度
     cosine_sim = cosine_similarity(vectors)
     similarity_score = cosine_sim[0][1]
     return similarity_score
 
 def calculate_similarity_tfidf(text1, text2):
+    # 使用正则表达式去掉标点符号和特殊符号
+    text1 = re.sub(r'\W', ' ', text1)
+    text2 = re.sub(r'\W', ' ', text2)
+    print(text1)
+    print(text2)
     # 创建TF-IDF向量化器
     tfidf_vectorizer = TfidfVectorizer()
     # 将文本转换为TF-IDF特征矩阵
     tfidf_matrix = tfidf_vectorizer.fit_transform([text1, text2])
+    print(tfidf_matrix[0])
+    print("next")
+    print(tfidf_matrix[1])
     # 计算余弦相似度
-    similarity_score = cosine_similarity(tfidf_matrix[0], tfidf_matrix[1])[0][0]
+    similarity_score = cosine_similarity(tfidf_matrix)[0][1]
+    print(similarity_score)
     return similarity_score
-
-def calculate_similarity_lsa(text1, text2, n_components=100):
-    # 使用TF-IDF向量化文本
-    vectorizer = TfidfVectorizer()
-    tfidf_matrix = vectorizer.fit_transform([text1, text2])
-    # 使用LSA降维
-    lsa = TruncatedSVD(n_components=n_components)
-    lsa_matrix = lsa.fit_transform(tfidf_matrix)
-    # 计算余弦相似度
-    similarity_score = cosine_similarity(lsa_matrix)[0, 1]
-    return similarity_score
-    """
 
 def calculate_similarity_levenshtein_distance(text1, text2):
     m = len(text1)
@@ -155,13 +148,39 @@ def calculate_similarity_difflib(text1, text2):
     sequenceMatcher.set_seqs(text1, text2)
     return sequenceMatcher.ratio()
 
+def splitWords(str_a):
+    wordsa=pseg.cut(str_a)
+    cuta = ""
+    seta = set()
+    for key in wordsa:
+        #print(key.word,key.flag)
+        cuta += key.word + " "
+        seta.add(key.word)
+    return [cuta, seta]
+def calculate_similarity_jaccard(text1,text2):
+    seta = splitWords(text1)[1]
+    setb = splitWords(text2)[1]
+    sa_sb = 1.0 * len(seta & setb) / len(seta | setb)
+    return sa_sb
+
+def calculate_similarity_lsa(text1, text2, n_components=2):
+    # 使用TF-IDF向量化文本
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform([text1, text2])
+    # 使用LSA降维
+    lsa = TruncatedSVD(n_components=n_components)
+    lsa_matrix = lsa.fit_transform(tfidf_matrix)
+    # 计算余弦相似度
+    similarity_score = cosine_similarity(lsa_matrix)[0, 1]
+    return similarity_score
+
 class SimHash(object):
     def __init__(self):
         jieba.initialize()  # 初始化jieba分词
 
     def sim_hash(self, content):
         seg = jieba.cut(content)
-        key_words = jieba.analyse.extract_tags("|".join(seg), topK=10, withWeight=True)
+        key_words = als.extract_tags("|".join(seg), topK=10, withWeight=True)
 
         key_list = []
         for feature, weight in key_words:
@@ -221,7 +240,10 @@ def calculate_similarity_hash(text1, text2):
 
 def calculate_similarity_bm25(text1, text2):
     # 将文本分词
-    tokenized_corpus = [text.split() for text in [text1, text2]]
+    text1 = re.sub(r'\W', ' ', text1)
+    text2 = re.sub(r'\W', ' ', text2)
+    tokenized_corpus = [list(jieba.cut(text)) for text in [text1, text2]]    
+    print(tokenized_corpus)
     # 训练 BM25 模型
     bm25 = BM25Okapi(tokenized_corpus)
     # 计算文本相似度
@@ -229,75 +251,89 @@ def calculate_similarity_bm25(text1, text2):
     return bm25_similarity[0]  #第二个文本相对于第一个的相似度
 
 
-#proportion
+# #LDA
+# for file in txt_files:
+#     file_list = read_file(file)
+#     with open('Output\\lda\\'+file,'w') as f:
+#         for line in file_list:
+#             print(line[1])
+#             f.write(line[1])
+#             f.write(',')
+#             #f.write(str(((calculate_proportion(line[2],data_original[int(line[0])][0]))+(calculate_proportion(line[3],data_original[int(line[0])][1])))/2))
+#             #f.write(',')
+#             f.write(str(((calculate_similarity_LDA(line[2],data_original[int(line[0])][0]))+(calculate_similarity_LDA(line[3],data_original[int(line[0])][1])))/2))
+#             f.write('\n')
+# #difflib
+# for file in txt_files:
+#     print(file)
+#     file_list = read_file(file)
+#     with open('Output\\difflib\\'+file,'w') as f:
+#         for line in file_list:
+#             print(line)
+#             print(line[1])
+#             f.write(line[1])
+#             f.write(',')
+#             #f.write(str(((calculate_proportion(line[2],data_original[int(line[0])][0]))+(calculate_proportion(line[3],data_original[int(line[0])][1])))/2))
+#             #f.write(',')
+#             f.write(str(((calculate_similarity_difflib(line[2],data_original[int(line[0])][0]))+(calculate_similarity_difflib(line[3],data_original[int(line[0])][1])))/2))
+#             f.write('\n')
+# #hash
+# for file in txt_files:
+#     file_list = read_file(file)
+#     with open('Output\\simhash\\'+file,'w') as f:
+#         for line in file_list:
+#             print(line[1])
+#             f.write(line[1])
+#             f.write(',')
+#             #f.write(str(((calculate_proportion(line[2],data_original[int(line[0])][0]))+(calculate_proportion(line[3],data_original[int(line[0])][1])))/2))
+#             #f.write(',')
+#             f.write(str(((calculate_similarity_hash(line[2],data_original[int(line[0])][0]))+(calculate_similarity_hash(line[3],data_original[int(line[0])][1])))/2))
+#             f.write('\n')
+# #levenshtein_distance
+# for file in txt_files:
+#     file_list = read_file(file)
+#     with open('Output\\levenshtein\\'+file,'w') as f:
+#         for line in file_list:
+#             print(line[1])
+#             f.write(line[1])
+#             f.write(',')
+#             #f.write(str(((calculate_proportion(line[2],data_original[int(line[0])][0]))+(calculate_proportion(line[3],data_original[int(line[0])][1])))/2))
+#             #f.write(',')
+#             f.write(str(((calculate_similarity_levenshtein_distance(line[2],data_original[int(line[0])][0]))+(calculate_similarity_levenshtein_distance(line[3],data_original[int(line[0])][1])))/2))
+#             f.write('\n')
+
+# #jaccard
+# for file in txt_files:
+#     file_list = read_file(file)
+#     with open('Output\\jaccard\\'+file,'w') as f:
+#         for line in file_list:
+#             print(line[1])
+#             f.write(line[1])
+#             f.write(',')
+#             #f.write(str(((calculate_proportion(line[2],data_original[int(line[0])][0]))+(calculate_proportion(line[3],data_original[int(line[0])][1])))/2))
+#             #f.write(',')
+#             f.write(str(((calculate_similarity_jaccard(line[2],data_original[int(line[0])][0]))+(calculate_similarity_jaccard(line[3],data_original[int(line[0])][1])))/2))
+#             f.write('\n')
+# #bm25
+# for file in txt_files:
+#     file_list = read_file(file)
+#     with open('Output\\bm25\\'+file,'w') as f:
+#         for line in file_list:
+#             print(line[1])
+#             f.write(line[1])
+#             f.write(',')
+#             #f.write(str(((calculate_proportion(line[2],data_original[int(line[0])][0]))+(calculate_proportion(line[3],data_original[int(line[0])][1])))/2))
+#             #f.write(',')
+#             f.write(str(((calculate_similarity_bm25(line[2],data_original[int(line[0])][0]))+(calculate_similarity_bm25(line[3],data_original[int(line[0])][1])))/2))
+#             f.write('\n')
+
+#transformer
 for file in txt_files:
     file_list = read_file(file)
-    with open('Output\\proportion\\'+file,'w') as f:
+    with open('Output\\transformer\\'+file,'w') as f:
         for line in file_list:
             print(line[1])
             f.write(line[1])
             f.write(',')
-            f.write(str(((calculate_proportion(line[2],data_original[int(line[0])][0]))+(calculate_proportion(line[3],data_original[int(line[0])][1])))/2))
-            f.write('\n')
-#LDA
-for file in txt_files:
-    file_list = read_file(file)
-    with open('Output\\lda\\'+file,'w') as f:
-        for line in file_list:
-            print(line[1])
-            f.write(line[1])
-            f.write(',')
-            f.write(str(((calculate_similarity_LDA(line[2],data_original[int(line[0])][0]))+(calculate_similarity_LDA(line[3],data_original[int(line[0])][1])))/2))
-            f.write('\n')
-#difflib
-for file in txt_files:
-    print(file)
-    file_list = read_file(file)
-    with open('Output\\difflib\\'+file,'w') as f:
-        for line in file_list:
-            print(line)
-            print(line[1])
-            f.write(line[1])
-            f.write(',')
-            f.write(str(((calculate_similarity_difflib(line[2],data_original[int(line[0])][0]))+(calculate_similarity_difflib(line[3],data_original[int(line[0])][1])))/2))
-            f.write('\n')
-#hash
-for file in txt_files:
-    file_list = read_file(file)
-    with open('Output\\simhash\\'+file,'w') as f:
-        for line in file_list:
-            print(line[1])
-            f.write(line[1])
-            f.write(',')
-            f.write(str(((calculate_similarity_hash(line[2],data_original[int(line[0])][0]))+(calculate_similarity_hash(line[3],data_original[int(line[0])][1])))/2))
-            f.write('\n')
-#levenshtein_distance
-for file in txt_files:
-    file_list = read_file(file)
-    with open('Output\\levenshtein\\'+file,'w') as f:
-        for line in file_list:
-            print(line[1])
-            f.write(line[1])
-            f.write(',')
-            f.write(str(((calculate_similarity_levenshtein_distance(line[2],data_original[int(line[0])][0]))+(calculate_similarity_levenshtein_distance(line[3],data_original[int(line[0])][1])))/2))
-            f.write('\n')
-#jaccard
-for file in txt_files:
-    file_list = read_file(file)
-    with open('Output\\jaccard\\'+file,'w') as f:
-        for line in file_list:
-            print(line[1])
-            f.write(line[1])
-            f.write(',')
-            f.write(str(((calculate_similarity_jaccard(line[2],data_original[int(line[0])][0]))+(calculate_similarity_jaccard(line[3],data_original[int(line[0])][1])))/2))
-            f.write('\n')
-#bm25
-for file in txt_files:
-    file_list = read_file(file)
-    with open('Output\\bm25\\'+file,'w') as f:
-        for line in file_list:
-            print(line[1])
-            f.write(line[1])
-            f.write(',')
-            f.write(str(((calculate_similarity_bm25(line[2],data_original[int(line[0])][0]))+(calculate_similarity_bm25(line[3],data_original[int(line[0])][1])))/2))
+            f.write(str(((calculate_similarity_transformer(line[2],data_original[int(line[0])][0]))+(calculate_similarity_transformer(line[3],data_original[int(line[0])][1])))/2))
             f.write('\n')

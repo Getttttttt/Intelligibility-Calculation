@@ -18,15 +18,16 @@ def write(method):
             else:
                 # 否则，将df合并到结果DataFrame中
                 result = result.join(df, how='outer')
-                
     # 将结果DataFrame写入到Excel文件中
     result.to_excel('mergedIntelligibility_'+method+'.xlsx')
 
 
-write('bm25')
-write('difflib')
-write('jaccard')
-write('lda')
-write('levenshtein')
-write('simhash')
-write('proportion')
+# write('bm25')
+# write('difflib')
+# write('jaccard')
+# write('lda')
+# write('levenshtein')
+# write('simhash')
+write('transformer')
+
+

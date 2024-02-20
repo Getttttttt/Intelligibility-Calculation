@@ -10,10 +10,10 @@ def conbert(method):
     # 将转置后的DataFrame写入到新的Excel文件中
     df_transposed.to_excel('transposedIntelligibility_'+method+'.xlsx', header=False)
 
-conbert('bm25')
-conbert('difflib')
-conbert('jaccard')
-conbert('lda')
-conbert('levenshtein')
-conbert('simhash')
-conbert('proportion')
+# conbert('bm25')
+# conbert('difflib')
+# conbert('jaccard')
+# conbert('lda')
+# conbert('levenshtein')
+# conbert('simhash')
+conbert('transformer')
